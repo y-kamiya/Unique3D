@@ -55,3 +55,25 @@ def run_mvprediction(input_image: Image.Image, remove_bg=True, guidance_scale=1.
     )
 
     return rgb_pils, single_image
+
+
+import os
+import argparse
+from pathlib import Path
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(add_help=True)
+    parser.add_argument("input_path")
+    parser.add_argument("--output_dir", type=Path, default="./output")
+    args = parser.parse_args()
+    print(args)
+
+    os.makedirs(args.output_dir, exist_ok=True)
+
+    img_pil = Image.open(args.input_path)
+    rgb_pils, front_pil = run_mvprediction(img_pil, remove_bg=True, seed=1145)
+
+    front_pil.save(args.output_dir / "front.png")
+    for i, img in enumerate(rgb_pils):
+        img.save(args.output_dir / f"{i}.png")
